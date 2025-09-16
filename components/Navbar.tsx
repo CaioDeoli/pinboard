@@ -13,13 +13,6 @@ export default function Navbar() {
             <CloseSmallOutlineRoundedIcon className="w-6 h-6" />
           </button>
         </div>
-        <select>
-          <option value="all">All</option>
-          <option value="images">Images</option>
-          <option value="videos">Videos</option>
-          <option value="audio">Audio</option>
-          <option value="documents">Documents</option>
-        </select>
         <button type="submit" className="w-9 h-9 bg-violet-400 rounded-full inline-flex items-center justify-center cursor-pointer">
           <SearchRoundedIcon className="w-5 h-5 text-white" />
         </button>

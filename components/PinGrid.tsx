@@ -21,7 +21,7 @@ const dummyPins = [
     id: 3,
     title: "Minimalist Portfolio Design",
     author: "John Doe",
-    image: "https://picsum.photos/id/1013/1200/900",
+    image: "https://picsum.photos/id/900/1200/900",
   },
   {
     id: 4,
