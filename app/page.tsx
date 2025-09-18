@@ -1,12 +1,11 @@
-import FilterSubnav from "@/components/FilterSubnav";
-import PinGrid from "@/components/PinGrid";
+import { dummyPins } from "@/components/mockups/dummyPins";
+import PinMasonry from "@/components/PinMasonry";
 
 export default function Home() {
   return (
     <main>
-      <FilterSubnav />
-      <div className="pt-6 pb-8">
-        <PinGrid />
+      <div className="p-4">
+        <PinMasonry items={dummyPins} gutter={16} />
       </div>
     </main>
   );
