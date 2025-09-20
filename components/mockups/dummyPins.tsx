@@ -5,6 +5,7 @@ type Pin = {
   width?: number; // optional intrinsic width
   height?: number; // optional intrinsic height
   title?: string;
+  link?: string;
 };
 
 export const dummyPins: Pin[] = Array.from({ length: 100 }).map((_, i) => {
@@ -18,5 +19,6 @@ export const dummyPins: Pin[] = Array.from({ length: 100 }).map((_, i) => {
   width: w,
   height: h,
   title: `Pin #${i + 1}`,
+  link: `https://picsum.photos/id/${10 + i}/${w}/${h}`,
   };
 });

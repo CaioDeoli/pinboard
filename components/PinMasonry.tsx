@@ -1,5 +1,9 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
+import DownloadIcon from "@/components/svgs/material-symbols-light--download-rounded.svg";
+import MoreHorizIcon from "@/components/svgs/material-symbols-light--more-horiz.svg";
+import BookmarkIcon from "@/components/svgs/material-symbols-light--bookmark-outline-rounded.svg";
+import Dropdown from "@/components/Dropdown";
 
 /**
  * PinMasonry.tsx
@@ -25,6 +29,7 @@ type Pin = {
   width?: number; // optional intrinsic width
   height?: number; // optional intrinsic height
   title?: string;
+  link?: string;
 };
 
 type Props = {
@@ -129,24 +134,88 @@ export default function PinMasonry({ items, gutter = 16 }: Props) {
     loadAll();
   }, [items, columnsCount, gutter]);
 
+  const buttonClass = "bg-[var(--color-base-200)] hover:bg-[var(--color-base-250)] outline-0 shadow-[var(--input-shadow)] hover:shadow-[var(--input-shadow-hover)] focus-visible:shadow-[0 0 0 3px var(--background-modifier-border-focus)] rounded-[5px] text-[var(--foreground)] text-[13px] font-[Mona_Sans]  inline-flex items-center justify-center px-3 py-1 h-[var(--input-height)] transition";
+
   return (
     <div ref={containerRef} className="w-full" aria-live="polite">
-      <div className="flex gap-4" style={{ columnGap: `${gutter}px` }}>
+      <div className="flex" style={{ columnGap: `${gutter}px` }}>
         { // If columns state isn't ready, render fallback columns to avoid layout shift
           (columns.length === columnsCount ? columns : Array.from({ length: columnsCount }, () => [])).map((col, i) => (
-          <div key={i} className="flex-1 flex flex-col gap-4">
+          <div key={i} className="flex-1 flex flex-col" style={{ rowGap: `${gutter}px` }}>
             {col.map((pin) => (
-              <figure key={pin.id} className="rounded-2xl overflow-hidden bg-gray-100">
+              <figure
+                key={pin.id}
+                className="relative rounded-2xl bg-gray-100 group"
+              >
                 <img
                   src={pin.src}
                   alt={pin.alt ?? pin.title ?? "pin"}
                   loading="lazy"
-                  style={{ width: '100%', height: 'auto', display: 'block' }}
-                  className="block w-full"
+                  className="block w-full rounded-2xl"
                 />
-                {/* {pin.title && (
-                  <figcaption className="p-2 text-sm text-gray-700">{pin.title}</figcaption>
-                )} */}
+              
+                {/* Overlay */}
+                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-3">
+                  {/* Top Save button */}
+                  <div className="flex justify-end">
+                    <Dropdown
+                      searchable
+                      searchPlaceholder="Search for a playlist"
+                      primaryAction={{ label: "New Bookmark", onClick: () => console.log("New Bookmark") }}
+                      listItems={[
+                        { id: "1", label: "Just Listen While Drinking Beer", onClick: () => console.log("playlist 1") },
+                        { id: "2", label: "Forró do Caraí", onClick: () => console.log("playlist 2") },
+                        { id: "3", label: "Sertanejo to Sing Along", onClick: () => console.log("playlist 3") },
+                      ]}
+                      menuAriaLabel="Save to playlist menu"
+                      menuWidthClass="w-[300px] max-w-[350px] p-2"
+                    >
+                      <button
+                        type="button"
+                        aria-haspopup="menu"
+                        aria-expanded="false"
+                        aria-label="Open save menu"
+                        className={`${buttonClass} w-7.5 cursor-pointer mod-cta clickable-icon`}
+                      >
+                        <BookmarkIcon className="w-4.5 h-4.5" />
+                      </button>
+                    </Dropdown>
+                  </div>
+              
+                  {/* Bottom row buttons */}
+                  <div className="flex gap-2 justify-end">
+                    {pin.link && (
+                      <a
+                        href={pin.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`${buttonClass} flex-1`}
+                      >
+                        Visit site
+                      </a>
+                    )}
+                    <button
+                      type="button"
+                      className={`${buttonClass} w-7.5 cursor-pointer clickable-icon`}
+                    >
+                      <DownloadIcon className="w-4.5 h-4.5" />
+                    </button>
+                    <Dropdown
+                      items={[
+                        { label: "Edit", onClick: () => console.log("Edit") },
+                        { label: "Delete",  onClick: () => console.log("Delete") },
+                        { label: "Share", onClick: () => console.log("Share") },
+                      ]}
+                    >
+                      <button
+                        type="button"
+                        className={`${buttonClass} w-7.5 cursor-pointer clickable-icon`}
+                      >
+                        <MoreHorizIcon className="w-4.5 h-4.5" />
+                      </button>
+                    </Dropdown>
+                  </div>
+                </div>
               </figure>
             ))}
           </div>
