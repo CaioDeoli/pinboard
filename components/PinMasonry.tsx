@@ -1,9 +1,11 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
-import DownloadIcon from "@/components/svgs/material-symbols-light--download-rounded.svg";
-import MoreHorizIcon from "@/components/svgs/material-symbols-light--more-horiz.svg";
-import BookmarkIcon from "@/components/svgs/material-symbols-light--bookmark-outline-rounded.svg";
+import DownloadIcon from "@/public/svgs/material-symbols-light--download-rounded.svg";
+import MoreHorizIcon from "@/public/svgs/material-symbols-light--more-horiz.svg";
+import BookmarkIcon from "@/public/svgs/material-symbols-light--bookmark-outline-rounded.svg";
+import BookmarkAddIcon from "@/public/svgs/material-symbols-light--bookmark-add-outline-rounded.svg";
 import Dropdown from "@/components/Dropdown";
+import tagsData from "@/public/jsons/tags.json";
 
 /**
  * PinMasonry.tsx
@@ -55,6 +57,17 @@ export default function PinMasonry({ items, gutter = 16 }: Props) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [columnsCount, setColumnsCount] = useState<number>(2);
   const [columns, setColumns] = useState<Pin[][]>([]);
+  const [tagListItems, setTagListItems] = useState<Array<{ id: string; label: string; onClick: () => void }>>([]);
+
+  // Process tags data on component mount
+  useEffect(() => {
+    const processedTags = tagsData.map((tag, index) => ({
+      id: (index + 1).toString(),
+      label: tag.text,
+      onClick: () => console.log(`Tag clicked: ${tag.href}`),
+    }));
+    setTagListItems(processedTags);
+  }, []);
 
   // Observe container width and update columnsCount
   useEffect(() => {
@@ -145,30 +158,26 @@ export default function PinMasonry({ items, gutter = 16 }: Props) {
             {col.map((pin) => (
               <figure
                 key={pin.id}
-                className="relative rounded-2xl bg-gray-100 group"
+                className="relative rounded-lg group"
               >
                 <img
                   src={pin.src}
                   alt={pin.alt ?? pin.title ?? "pin"}
                   loading="lazy"
-                  className="block w-full rounded-2xl"
+                  className="block w-full rounded-lg"
                 />
               
                 {/* Overlay */}
-                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-3">
+                <div className="absolute inset-0 bg-black/50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-3">
                   {/* Top Save button */}
                   <div className="flex justify-end">
                     <Dropdown
                       searchable
-                      searchPlaceholder="Search for a playlist"
-                      primaryAction={{ label: "New Bookmark", onClick: () => console.log("New Bookmark") }}
-                      listItems={[
-                        { id: "1", label: "Just Listen While Drinking Beer", onClick: () => console.log("playlist 1") },
-                        { id: "2", label: "Forró do Caraí", onClick: () => console.log("playlist 2") },
-                        { id: "3", label: "Sertanejo to Sing Along", onClick: () => console.log("playlist 3") },
-                      ]}
-                      menuAriaLabel="Save to playlist menu"
-                      menuWidthClass="w-[300px] max-w-[350px] p-2"
+                      searchPlaceholder="Search for a tag"
+                      primaryAction={{ label: "New tag", onClick: () => console.log("New Tag"), icon: <BookmarkAddIcon className="w-4 h-4 mt-0.5" /> }}
+                      listItems={tagListItems}
+                      menuAriaLabel="Save to tag menu"
+                      menuWidthClass="w-[300px] max-w-[350px] p-1.5"
                     >
                       <button
                         type="button"

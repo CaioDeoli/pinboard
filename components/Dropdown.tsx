@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useRef, useEffect, ReactNode } from "react";
+import SearchIcon from "@/public/svgs/material-symbols-light--search-rounded.svg";
 
 type DropdownItem = {
   label: string;
@@ -38,20 +39,29 @@ export default function Dropdown({ items, children, searchable, searchPlaceholde
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // fecha dropdown ao sair do figure ancestral
-  // useEffect(() => {
-  //   const dropdownEl = ref.current;
-  //   if (!dropdownEl) return;
-  //   const figureEl = dropdownEl.closest("figure");
-  //   if (!figureEl) return;
+    // fecha dropdown ao sair do figure ancestral
+    useEffect(() => {
+      const dropdownEl = ref.current;
+      if (!dropdownEl) return;
+      const figureEl = dropdownEl.closest("figure");
+      if (!figureEl) return;
 
-  //   const handleFigureMouseLeave = () => setOpen(false);
+      const handleFigureMouseLeave = () => setOpen(false);
 
-  //   figureEl.addEventListener("mouseleave", handleFigureMouseLeave);
-  //   return () => {
-  //     figureEl.removeEventListener("mouseleave", handleFigureMouseLeave);
-  //   };
-  // }, []);
+      figureEl.addEventListener("mouseleave", handleFigureMouseLeave);
+      return () => {
+        figureEl.removeEventListener("mouseleave", handleFigureMouseLeave);
+      };
+    }, []);
+
+  const filteredItems = (listItems || []).filter((it) => {
+    if (!localQuery) return true;
+    return it.label.toLowerCase().includes(localQuery.trim().toLowerCase());
+  });
+
+  const baseClass =
+    "text-[var(--foreground)] text-[13px]/[1.3] font-[Mona_Sans] inline-flex gap-2 items-center px-2 py-1 rounded-sm overflow-hidden text-ellipsis whitespace-nowrap cursor-pointer transition w-full";
+  const hoverClass = "hover:bg-white/7";
 
   return (
     <div className="relative inline-block" ref={ref}>
@@ -59,7 +69,7 @@ export default function Dropdown({ items, children, searchable, searchPlaceholde
 
       {open && (
         <div
-          className={`bg-[var(--color-base-200)] border border-[var(--color-base-350)] rounded-lg absolute right-0 mt-1 z-50 ${
+          className={`bg-[var(--color-base-200)] border border-[var(--color-base-350)] rounded-lg absolute right-0 mt-1 z-50 shadow-[var(--shadow-s)] ${
             (searchable || primaryAction || (listItems && listItems.length >= 0))
               ? (menuWidthClass ?? "w-[280px] max-w-[350px] p-2")
               : "w-[146px] max-w-[146px] p-[6px]"
@@ -70,27 +80,30 @@ export default function Dropdown({ items, children, searchable, searchPlaceholde
           {(searchable || primaryAction || (listItems && listItems.length >= 0)) ? (
             <ul>
               {searchable && (
-                <li role="presentation" className="mb-2">
+                <li role="presentation" className="mb-1.5">
                   <div role="menuitem" className="relative">
-                    <input
-                      role="searchbox"
-                      type="text"
-                      aria-label={searchPlaceholder ?? "Search for a playlist"}
-                      placeholder={searchPlaceholder ?? "Search for a playlist"}
-                      maxLength={80}
-                      value={localQuery}
-                      onChange={(e) => {
-                        setLocalQuery(e.target.value);
-                        onSearchChange?.(e.target.value);
-                      }}
-                      className="w-full h-[32px] rounded-[6px] px-3 text-[13px] font-[Mona_Sans] bg-[var(--color-base-150)] text-[var(--foreground)] placeholder:text-[var(--muted-foreground)] outline-0 shadow-[var(--input-shadow)] focus:shadow-[var(--input-shadow-hover)]"
-                    />
+                    <div className="relative flex items-center">
+                      <SearchIcon className="absolute text-[var(--foreground)] left-2 mt-0.5" />
+                      <input
+                        role="searchbox"
+                        type="text"
+                        aria-label={searchPlaceholder ?? "Search for a playlist"}
+                        placeholder={searchPlaceholder ?? "Search for a playlist"}
+                        maxLength={80}
+                        value={localQuery}
+                        onChange={(e) => {
+                          setLocalQuery(e.target.value);
+                          onSearchChange?.(e.target.value);
+                        }}
+                        className="w-full h-[30px] rounded-[6px] ps-8 pe-2 text-[13px] font-[Mona_Sans] bg-[var(--color-dark-950)] text-[var(--foreground)] placeholder:text-[var(--foreground)] outline-0 shadow-[var(--input-shadow)] focus:shadow-[var(--input-shadow-hover)] transition"
+                      />
+                    </div>
                   </div>
                 </li>
               )}
 
               {primaryAction && (
-                <li role="presentation" className="mb-2">
+                <li role="presentation" className="mb-1.5">
                   <button
                     type="button"
                     role="menuitem"
@@ -99,7 +112,7 @@ export default function Dropdown({ items, children, searchable, searchPlaceholde
                       primaryAction.onClick();
                       setOpen(false);
                     }}
-                    className="w-full inline-flex items-center gap-2 px-2 py-2 rounded-md text-[13px] font-[Mona_Sans] text-[var(--foreground)] bg-[var(--color-base-200)] hover:bg-white/7 transition"
+                    className={`${baseClass} ${hoverClass}`}
                   >
                     {primaryAction.icon && <span className="flex-shrink-0">{primaryAction.icon}</span>}
                     <span className="truncate">{primaryAction.label}</span>
@@ -109,30 +122,38 @@ export default function Dropdown({ items, children, searchable, searchPlaceholde
 
               {(listItems && listItems.length >= 0) && (
                 <>
-                  <div role="separator" aria-orientation="horizontal" className="h-px bg-[var(--color-base-350)] my-2" />
+                  <div role="separator" aria-orientation="horizontal" className="h-0 border-b border-[var(--color-base-350)] my-1.5 -mx-1.5" />
                   <li role="presentation">
-                    <div className="max-h-[calc(100vh-24px)] overflow-y-auto pr-1">
+                    <div className="max-h-[calc(60vh-48px)] overflow-y-auto pr-1 scrollbar-custom-1 -me-1.5">
                       <ul>
-                        {(listItems || [])
-                          .filter((it) => {
-                            if (!localQuery) return true;
-                            return it.label.toLowerCase().includes(localQuery.trim().toLowerCase());
-                          })
-                          .map((it) => (
-                          <li key={it.id} role="presentation">
-                            <button
-                              type="button"
+                        {filteredItems.length === 0 ? (
+                          <li role="presentation">
+                            <div
                               role="menuitem"
-                              onClick={() => {
-                                it.onClick?.();
-                                setOpen(false);
-                              }}
-                              className="w-full text-left text-[13px] font-[Mona_Sans] text-[var(--foreground)] px-2 py-2 rounded-sm hover:bg-white/7 transition"
+                              aria-disabled="true"
+                              className={`${baseClass} select-none text-[var(--foreground)]`}
+                              style={{ cursor: "auto" }}
                             >
-                              <span className="truncate">{it.label}</span>
-                            </button>
+                              <span className="truncate">Tag not found</span>
+                            </div>
                           </li>
-                        ))}
+                        ) : (
+                          filteredItems.map((it) => (
+                            <li key={it.id} role="presentation">
+                              <button
+                                type="button"
+                                role="menuitem"
+                                onClick={() => {
+                                  it.onClick?.();
+                                  setOpen(false);
+                                }}
+                                className={`${baseClass} ${hoverClass}`}
+                              >
+                                <span className="truncate">{it.label}</span>
+                              </button>
+                            </li>
+                          ))
+                        )}
                       </ul>
                     </div>
                   </li>
@@ -142,9 +163,9 @@ export default function Dropdown({ items, children, searchable, searchPlaceholde
           ) : (
             <div>
               {(items ?? []).map((item, idx) => {
-                const baseClass =
-                  "text-[var(--foreground)] text-[13px]/[1.3] font-[Mona_Sans] flex gap-2 items-center px-2 py-1 rounded-sm overflow-hidden text-ellipsis whitespace-nowrap cursor-pointer transition";
-                const hoverClass = "hover:bg-white/7";
+                // const baseClass =
+                //   "text-[var(--foreground)] text-[13px]/[1.3] font-[Mona_Sans] flex gap-2 items-center px-2 py-1 rounded-sm overflow-hidden text-ellipsis whitespace-nowrap cursor-pointer transition";
+                // const hoverClass = "hover:bg-white/7";
 
                 const content = (
                   <>
