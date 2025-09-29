@@ -94,7 +94,7 @@ export default function Dropdown({ items, children, searchable, searchPlaceholde
                           setLocalQuery(e.target.value);
                           onSearchChange?.(e.target.value);
                         }}
-                        className="bg-[var(--color-base-250)] border border-[var(--color-base-300)] hover:border-[var(--color-base-350)] outline-0 h-[30px] w-full rounded-[5px] ps-8 pe-2 py-1 text-[Mona_Sans] text-[13px] text-[var(--color-base-950)] transition"
+                        className="bg-[var(--color-base-250)] border border-[var(--color-base-300)] hover:border-[var(--color-base-350)] outline-0 h-[30px] w-full rounded-[5px] ps-8 pe-2 py-1 font-[Mona_Sans] text-[13px] text-[var(--color-base-950)] transition"
                       />
                     </div>
                   </div>

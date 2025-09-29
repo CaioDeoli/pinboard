@@ -18,7 +18,7 @@ export default function TextEditor({
   className = "",
   autoFocus = false,
   title = "",
-  onTitleChange
+  onTitleChange,
 }: TextEditorProps) {
   const editorRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -28,7 +28,11 @@ export default function TextEditor({
     if (!editorRef.current) return;
 
     // Se já tem elementos cd-text-edit-line, não processa novamente
-    if (htmlContent.includes("cd-text-edit-line block relative m-0 p-0 max-w-[700px]")) {
+    if (
+      htmlContent.includes(
+        "cd-text-edit-line block relative m-0 p-0 max-w-[700px]",
+      )
+    ) {
       return;
     }
 
@@ -75,7 +79,8 @@ export default function TextEditor({
     // Criar elementos cd-text-edit-line para cada linha
     lines.forEach((lineContent, index) => {
       const lineDiv = document.createElement("div");
-      lineDiv.className = "cd-text-edit-line block relative m-0 p-0 max-w-[700px]";
+      lineDiv.className =
+        "cd-text-edit-line block relative m-0 p-0 max-w-[700px]";
       lineDiv.setAttribute("dir", "ltr");
 
       if (lineContent === "") {
@@ -93,9 +98,10 @@ export default function TextEditor({
   // Função para obter o texto plano (sem HTML)
   const getPlainText = useCallback(() => {
     if (editorRef.current) {
-      const lineElements = editorRef.current.querySelectorAll(".cd-text-edit-line");
+      const lineElements =
+        editorRef.current.querySelectorAll(".cd-text-edit-line");
       return Array.from(lineElements)
-        .map(line => line.textContent || "")
+        .map((line) => line.textContent || "")
         .join("\n");
     }
     return "";
@@ -121,7 +127,11 @@ export default function TextEditor({
       const currentHTML = editorRef.current.innerHTML;
 
       // Se não há elementos cd-text-edit-line, processa o conteúdo
-      if (!currentHTML.includes("cd-text-edit-line block relative m-0 p-0 max-w-[700px]")) {
+      if (
+        !currentHTML.includes(
+          "cd-text-edit-line block relative m-0 p-0 max-w-[700px]",
+        )
+      ) {
         processContent(currentHTML);
       }
 
@@ -133,7 +143,13 @@ export default function TextEditor({
         onContentChange(htmlContent);
       }
     }
-  }, [onContentChange, getFormattedHTML, getPlainText, content, processContent]);
+  }, [
+    onContentChange,
+    getFormattedHTML,
+    getPlainText,
+    content,
+    processContent,
+  ]);
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
     // Permite Enter para nova linha (com Shift+Enter também funciona)
@@ -153,20 +169,36 @@ export default function TextEditor({
           }
 
           // Se não é um cd-text-edit-line, encontra o cd-text-edit-line pai
-          if (currentLine && currentLine instanceof HTMLElement && !currentLine.classList.contains("cd-text-edit-line block relative m-0 p-0 max-w-[700px]")) {
-            const closestLine = currentLine.closest(".cd-text-edit-line") as HTMLElement | null;
+          if (
+            currentLine &&
+            currentLine instanceof HTMLElement &&
+            !currentLine.classList.contains(
+              "cd-text-edit-line block relative m-0 p-0 max-w-[700px]",
+            )
+          ) {
+            const closestLine = currentLine.closest(
+              ".cd-text-edit-line",
+            ) as HTMLElement | null;
             currentLine = closestLine;
           }
 
-          if (currentLine && currentLine instanceof HTMLElement && currentLine.classList.contains("cd-text-edit-line")) {
+          if (
+            currentLine &&
+            currentLine instanceof HTMLElement &&
+            currentLine.classList.contains("cd-text-edit-line")
+          ) {
             // Cria nova linha após a atual
             const newLine = document.createElement("div");
-            newLine.className = "cd-text-edit-line block relative m-0 p-0 max-w-[700px]";
+            newLine.className =
+              "cd-text-edit-line block relative m-0 p-0 max-w-[700px]";
             newLine.setAttribute("dir", "ltr");
             newLine.innerHTML = "<br>";
 
             if (currentLine.parentNode) {
-              currentLine.parentNode.insertBefore(newLine, currentLine.nextSibling);
+              currentLine.parentNode.insertBefore(
+                newLine,
+                currentLine.nextSibling,
+              );
             }
 
             // Move o cursor para a nova linha
@@ -189,35 +221,49 @@ export default function TextEditor({
       if (selection) {
         const range = selection.getRangeAt(0);
         const strongTagLength = 9; // Length of "<strong></strong>"
-        range.setStart(range.endContainer, Math.max(0, range.endOffset - strongTagLength));
-        range.setEnd(range.endContainer, Math.max(0, range.endOffset - strongTagLength));
+        range.setStart(
+          range.endContainer,
+          Math.max(0, range.endOffset - strongTagLength),
+        );
+        range.setEnd(
+          range.endContainer,
+          Math.max(0, range.endOffset - strongTagLength),
+        );
         selection.removeAllRanges();
         selection.addRange(range);
       }
     }
   }, []);
 
-  const handlePaste = useCallback((e: React.ClipboardEvent) => {
-    e.preventDefault();
-    const text = e.clipboardData.getData("text/plain");
+  const handlePaste = useCallback(
+    (e: React.ClipboardEvent) => {
+      e.preventDefault();
+      const text = e.clipboardData.getData("text/plain");
 
-    // Se há seleção, substitui, senão insere
-    const selection = window.getSelection();
-    if (selection && selection.rangeCount > 0) {
-      const range = selection.getRangeAt(0);
-      range.deleteContents();
-      range.insertNode(document.createTextNode(text));
-    } else {
-      document.execCommand("insertText", false, text);
-    }
-
-    // Força o processamento do conteúdo
-    setTimeout(() => {
-      if (editorRef.current && !editorRef.current.innerHTML.includes("cd-text-edit-line block relative m-0 p-0 max-w-[700px]")) {
-        processContent(editorRef.current.innerHTML);
+      // Se há seleção, substitui, senão insere
+      const selection = window.getSelection();
+      if (selection && selection.rangeCount > 0) {
+        const range = selection.getRangeAt(0);
+        range.deleteContents();
+        range.insertNode(document.createTextNode(text));
+      } else {
+        document.execCommand("insertText", false, text);
       }
-    }, 0);
-  }, [processContent]);
+
+      // Força o processamento do conteúdo
+      setTimeout(() => {
+        if (
+          editorRef.current &&
+          !editorRef.current.innerHTML.includes(
+            "cd-text-edit-line block relative m-0 p-0 max-w-[700px]",
+          )
+        ) {
+          processContent(editorRef.current.innerHTML);
+        }
+      }, 0);
+    },
+    [processContent],
+  );
 
   useEffect(() => {
     if (autoFocus && editorRef.current) {
@@ -229,7 +275,8 @@ export default function TextEditor({
   useEffect(() => {
     if (editorRef.current && !editorRef.current.innerHTML) {
       const lineDiv = document.createElement("div");
-      lineDiv.className = "cd-text-edit-line block relative m-0 p-0 max-w-[700px]";
+      lineDiv.className =
+        "cd-text-edit-line block relative m-0 p-0 max-w-[700px]";
       lineDiv.setAttribute("dir", "ltr");
       lineDiv.innerHTML = "<br>";
       editorRef.current.appendChild(lineDiv);
@@ -252,7 +299,7 @@ export default function TextEditor({
     observer.observe(editor, {
       childList: true,
       characterData: true,
-      subtree: true
+      subtree: true,
     });
 
     return () => observer.disconnect();
@@ -273,7 +320,7 @@ export default function TextEditor({
             value={title}
             onChange={(e) => onTitleChange?.(e.target.value)}
             placeholder="New pin"
-            className="block font-['Mona_Sans'] font-bold leading-[1.2] text-[29px] text-[var(--color-base-950)] tracking-tight placeholder:text-[var(--color-base-600)] outline-none"
+            className="block font-['Mona_Sans'] text-[29px] leading-[1.2] font-bold tracking-tight text-[var(--color-base-950)] outline-none placeholder:text-[var(--color-base-600)]"
           />
         </div>
       )}
@@ -281,12 +328,12 @@ export default function TextEditor({
       {/* Container */}
       <div
         ref={containerRef}
-        className="flex flex-1 items-stretch overflow-x-visible font-['Mona_Sans'] leading-[1.5] text-[16px]"
+        className="flex flex-1 items-stretch overflow-x-visible font-['Mona_Sans'] text-[16px] leading-[1.5]"
       >
         {/* Editor */}
         <div
           ref={editorRef}
-          className="block shrink w-0 grow-2 basis-[unset] max-w-[700px] min-h-[unset] whitespace-break-spaces break-keep wrap-break-word caret-[var(--color-base-950)] m-0 p-0 pb-[277px] outline-none select-text"
+          className="m-0 block min-h-[unset] w-0 max-w-[700px] shrink grow-2 basis-[unset] p-0 pb-[277px] wrap-break-word break-keep whitespace-break-spaces caret-[var(--color-base-950)] outline-none select-text"
           spellCheck={true}
           autoCorrect="on"
           autoCapitalize="on"

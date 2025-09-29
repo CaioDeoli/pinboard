@@ -27,33 +27,31 @@ export default function PrimarySidebar() {
     { href: "#", Icon: ListAltIcon },
   ];
 
-  const bottomItems: SidebarItem[] = [
-    { href: "#", Icon: SettingsIcon },
-  ];
+  const bottomItems: SidebarItem[] = [{ href: "#", Icon: SettingsIcon }];
 
   return (
     <>
-      <div className="bg-[var(--color-base-200)] border-r border-[var(--color-base-300)] fixed top-0 left-0 z-9 h-[calc(100vh-40px)] mt-10 pt-2 pb-3 px-1 w-11 flex justify-content-center overflow-y-auto overflow-x-hidden">
-        <div className="h-full w-full flex flex-col justify-between gap-1.5">
+      <div className="justify-content-center fixed top-0 left-0 z-9 mt-10 flex h-[calc(100vh-40px)] w-11 overflow-x-hidden overflow-y-auto border-r border-[var(--color-base-300)] bg-[var(--color-base-200)] px-1 pt-2 pb-3">
+        <div className="flex h-full w-full flex-col justify-between gap-1.5">
           <ul className="flex flex-col gap-1.5">
             {items.map((item, index) => (
-              <li key={index} className="inline-flex mx-auto">
+              <li key={index} className="mx-auto inline-flex">
                 {item.href ? (
                   <a
                     href={item.href}
-                    className="hover:bg-white/7 text-[var(--color-base-700)] py-1 px-1.5 rounded-sm inline-flex items-center justify-center transition"
+                    className="inline-flex items-center justify-center rounded-sm px-1.5 py-1 text-[var(--color-base-700)] transition hover:bg-white/7"
                     aria-label={item.label}
                   >
-                    <item.Icon className="w-4.5 h-4.5" />
+                    <item.Icon className="h-4.5 w-4.5" />
                   </a>
                 ) : item.onClick ? (
                   <button
                     type="button"
                     onClick={item.onClick}
-                    className="hover:bg-white/7 text-[var(--color-base-700)] py-1 px-1.5 rounded-sm inline-flex items-center justify-center transition focus-visible:outline-none"
+                    className="inline-flex items-center justify-center rounded-sm px-1.5 py-1 text-[var(--color-base-700)] transition hover:bg-white/7 focus-visible:outline-none"
                     aria-label={item.label}
                   >
-                    <item.Icon className="w-4.5 h-4.5" />
+                    <item.Icon className="h-4.5 w-4.5" />
                   </button>
                 ) : null}
               </li>
@@ -61,23 +59,23 @@ export default function PrimarySidebar() {
           </ul>
           <ul className="flex flex-col gap-1.5">
             {bottomItems.map((item, index) => (
-              <li key={index} className="inline-flex mx-auto">
+              <li key={index} className="mx-auto inline-flex">
                 {item.href ? (
                   <a
                     href={item.href}
-                    className="hover:bg-white/7 text-[var(--color-base-700)] py-1 px-1.5 rounded-sm inline-flex items-center justify-center transition"
+                    className="inline-flex items-center justify-center rounded-sm px-1.5 py-1 text-[var(--color-base-700)] transition hover:bg-white/7"
                     aria-label={item.label}
                   >
-                    <item.Icon className="w-4.5 h-4.5" />
+                    <item.Icon className="h-4.5 w-4.5" />
                   </a>
                 ) : item.onClick ? (
                   <button
                     type="button"
                     onClick={item.onClick}
-                    className="hover:bg-white/7 text-[var(--color-base-700)] py-1 px-1.5 rounded-sm inline-flex items-center justify-center transition focus-visible:outline-none"
+                    className="inline-flex items-center justify-center rounded-sm px-1.5 py-1 text-[var(--color-base-700)] transition hover:bg-white/7 focus-visible:outline-none"
                     aria-label={item.label}
                   >
-                    <item.Icon className="w-4.5 h-4.5" />
+                    <item.Icon className="h-4.5 w-4.5" />
                   </button>
                 ) : null}
               </li>
@@ -85,7 +83,11 @@ export default function PrimarySidebar() {
           </ul>
         </div>
       </div>
-      <Modal open={modalOpen} onClose={() => setModalOpen(false)} title="Busca de Documentos" />
+      <Modal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        title="Busca de Documentos"
+      />
     </>
   );
 }

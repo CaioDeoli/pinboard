@@ -9,8 +9,8 @@ export default function Home() {
 
   return (
     <main>
-      <div className="flex flex-row h-[calc(100vh-40px)]">
-        <div className="flex-1 p-4 overflow-auto custom-scrollbar-1">
+      <div className="flex h-[calc(100vh-40px)] flex-row">
+        <div className="custom-scrollbar-1 flex-1 overflow-auto p-4">
           <PinMasonry
             items={dummyPins}
             gutter={16}

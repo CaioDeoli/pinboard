@@ -58,7 +58,9 @@ export default function PinMasonry({ items, gutter = 16, onPinClick }: Props) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [columnsCount, setColumnsCount] = useState<number>(2);
   const [columns, setColumns] = useState<Pin[][]>([]);
-  const [tagListItems, setTagListItems] = useState<Array<{ id: string; label: string; onClick: () => void }>>([]);
+  const [tagListItems, setTagListItems] = useState<
+    Array<{ id: string; label: string; onClick: () => void }>
+  >([]);
 
   // Process tags data on component mount
   useEffect(() => {
@@ -91,7 +93,8 @@ export default function PinMasonry({ items, gutter = 16, onPinClick }: Props) {
   useEffect(() => {
     if (!containerRef.current) return;
     const containerWidth = containerRef.current.clientWidth;
-    const colWidth = (containerWidth - (columnsCount - 1) * gutter) / columnsCount;
+    const colWidth =
+      (containerWidth - (columnsCount - 1) * gutter) / columnsCount;
 
     // helper to get ratio (height/width) for a pin
     const loadAll = async () => {
@@ -108,11 +111,17 @@ export default function PinMasonry({ items, gutter = 16, onPinClick }: Props) {
           img.src = pin.src;
           if (img.complete) {
             // already cached
-            resolve({ pin, ratio: (img.naturalHeight || 1) / (img.naturalWidth || 1) });
+            resolve({
+              pin,
+              ratio: (img.naturalHeight || 1) / (img.naturalWidth || 1),
+            });
             return;
           }
           img.onload = () => {
-            resolve({ pin, ratio: (img.naturalHeight || 1) / (img.naturalWidth || 1) });
+            resolve({
+              pin,
+              ratio: (img.naturalHeight || 1) / (img.naturalWidth || 1),
+            });
           };
           img.onerror = () => {
             // fallback: square
@@ -148,89 +157,109 @@ export default function PinMasonry({ items, gutter = 16, onPinClick }: Props) {
     loadAll();
   }, [items, columnsCount, gutter]);
 
-  const buttonClass = "outline-0 rounded-[5px] text-[var(--foreground)] text-[13px] font-[Mona_Sans] inline-flex items-center justify-center h-[var(--input-height)] transition";
+  const buttonClass =
+    "outline-0 rounded-[5px] text-[var(--foreground)] text-[13px] font-[Mona_Sans] inline-flex items-center justify-center h-[var(--input-height)] transition";
 
   return (
     <div ref={containerRef} className="w-full" aria-live="polite">
       <div className="flex" style={{ columnGap: `${gutter}px` }}>
-        { // If columns state isn't ready, render fallback columns to avoid layout shift
-          (columns.length === columnsCount ? columns : Array.from({ length: columnsCount }, () => [])).map((col, i) => (
-          <div key={i} className="flex-1 flex flex-col" style={{ rowGap: `${gutter}px` }}>
-            {col.map((pin) => (
-              <figure
-                key={pin.id}
-                className="relative rounded-lg group cursor-pointer"
-                onClick={() => onPinClick && onPinClick(pin)}
-              >
-                <img
-                  src={pin.src}
-                  alt={pin.alt ?? pin.title ?? "pin"}
-                  loading="lazy"
-                  className="block w-full rounded-lg"
-                />
-              
-                {/* Overlay */}
-                <div className="absolute inset-0 bg-black/50 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-between p-3">
-                  {/* Top Save button */}
-                  <div className="flex justify-end">
-                    <Dropdown
-                      searchable
-                      searchPlaceholder="Search for a tag"
-                      primaryAction={{ label: "New tag", onClick: () => console.log("New Tag"), icon: <BookmarkAddIcon className="w-4 h-4 mt-0.5" /> }}
-                      listItems={tagListItems}
-                      menuAriaLabel="Save to tag menu"
-                      menuWidthClass="w-[300px] max-w-[350px] p-1.5"
-                    >
+        {
+          // If columns state isn't ready, render fallback columns to avoid layout shift
+          (columns.length === columnsCount
+            ? columns
+            : Array.from({ length: columnsCount }, () => [])
+          ).map((col, i) => (
+            <div
+              key={i}
+              className="flex flex-1 flex-col"
+              style={{ rowGap: `${gutter}px` }}
+            >
+              {col.map((pin) => (
+                <figure
+                  key={pin.id}
+                  className="group relative cursor-pointer rounded-lg"
+                  onClick={() => onPinClick && onPinClick(pin)}
+                >
+                  <img
+                    src={pin.src}
+                    alt={pin.alt ?? pin.title ?? "pin"}
+                    loading="lazy"
+                    className="block w-full rounded-lg"
+                  />
+
+                  {/* Overlay */}
+                  <div className="absolute inset-0 flex flex-col justify-between rounded-lg bg-black/50 p-3 opacity-0 transition-opacity group-hover:opacity-100">
+                    {/* Top Save button */}
+                    <div className="flex justify-end">
+                      <Dropdown
+                        searchable
+                        searchPlaceholder="Search for a tag"
+                        primaryAction={{
+                          label: "New tag",
+                          onClick: () => console.log("New Tag"),
+                          icon: <BookmarkAddIcon className="mt-0.5 h-4 w-4" />,
+                        }}
+                        listItems={tagListItems}
+                        menuAriaLabel="Save to tag menu"
+                        menuWidthClass="w-[300px] max-w-[350px] p-1.5"
+                      >
+                        <button
+                          type="button"
+                          aria-haspopup="menu"
+                          aria-expanded="false"
+                          aria-label="Open save menu"
+                          className={`${buttonClass} focus-visible:shadow-[0 0 0 3px var(--background-modifier-border-focus)] w-7.5 cursor-pointer bg-[var(--color-accent-600)] p-1 text-white shadow-[var(--input-shadow-small)] hover:bg-[var(--color-accent-500)] hover:shadow-[var(--input-shadow-hover)]`}
+                        >
+                          <BookmarkIcon className="h-4.5 w-4.5" />
+                        </button>
+                      </Dropdown>
+                    </div>
+
+                    {/* Bottom row buttons */}
+                    <div className="flex justify-end gap-2">
+                      {pin.link && (
+                        <a
+                          href={pin.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className={`${buttonClass} focus-visible:shadow-[0 0 0 3px var(--background-modifier-border-focus)] flex-1 bg-[var(--color-base-300)] px-3 py-1 shadow-[var(--input-shadow)] hover:bg-[var(--color-base-350)] hover:shadow-[var(--input-shadow-hover)]`}
+                        >
+                          Visit site
+                        </a>
+                      )}
                       <button
                         type="button"
-                        aria-haspopup="menu"
-                        aria-expanded="false"
-                        aria-label="Open save menu"
-                        className={`${buttonClass} bg-[var(--color-accent-600)] hover:bg-[var(--color-accent-500)] shadow-[var(--input-shadow-small)] hover:shadow-[var(--input-shadow-hover)] focus-visible:shadow-[0 0 0 3px var(--background-modifier-border-focus)] text-white w-7.5 cursor-pointer p-1`}
+                        className={`${buttonClass} focus-visible:shadow-[0 0 0 3px var(--background-modifier-border-focus)] w-7.5 cursor-pointer bg-[var(--color-base-300)] p-1 shadow-[var(--input-shadow-small)] hover:bg-[var(--color-base-350)] hover:shadow-[var(--input-shadow-hover)]`}
                       >
-                        <BookmarkIcon className="w-4.5 h-4.5" />
+                        <DownloadIcon className="h-4.5 w-4.5" />
                       </button>
-                    </Dropdown>
-                  </div>
-              
-                  {/* Bottom row buttons */}
-                  <div className="flex gap-2 justify-end">
-                    {pin.link && (
-                      <a
-                        href={pin.link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={`${buttonClass} bg-[var(--color-base-300)] hover:bg-[var(--color-base-350)] shadow-[var(--input-shadow)] hover:shadow-[var(--input-shadow-hover)] focus-visible:shadow-[0 0 0 3px var(--background-modifier-border-focus)] flex-1 px-3 py-1`}
+                      <Dropdown
+                        items={[
+                          { label: "Edit", onClick: () => console.log("Edit") },
+                          {
+                            label: "Delete",
+                            onClick: () => console.log("Delete"),
+                          },
+                          {
+                            label: "Share",
+                            onClick: () => console.log("Share"),
+                          },
+                        ]}
                       >
-                        Visit site
-                      </a>
-                    )}
-                    <button
-                      type="button"
-                      className={`${buttonClass} bg-[var(--color-base-300)] hover:bg-[var(--color-base-350)] shadow-[var(--input-shadow-small)] hover:shadow-[var(--input-shadow-hover)] focus-visible:shadow-[0 0 0 3px var(--background-modifier-border-focus)] p-1 w-7.5 cursor-pointer`}
-                    >
-                      <DownloadIcon className="w-4.5 h-4.5" />
-                    </button>
-                    <Dropdown
-                      items={[
-                        { label: "Edit", onClick: () => console.log("Edit") },
-                        { label: "Delete",  onClick: () => console.log("Delete") },
-                        { label: "Share", onClick: () => console.log("Share") },
-                      ]}
-                    >
-                      <button
-                        type="button"
-                        className={`${buttonClass} bg-[var(--color-base-300)] hover:bg-[var(--color-base-350)] shadow-[var(--input-shadow-small)] hover:shadow-[var(--input-shadow-hover)] focus-visible:shadow-[0 0 0 3px var(--background-modifier-border-focus)] p-1 w-7.5 cursor-pointer`}
-                      >
-                        <MoreHorizIcon className="w-4.5 h-4.5" />
-                      </button>
-                    </Dropdown>
+                        <button
+                          type="button"
+                          className={`${buttonClass} focus-visible:shadow-[0 0 0 3px var(--background-modifier-border-focus)] w-7.5 cursor-pointer bg-[var(--color-base-300)] p-1 shadow-[var(--input-shadow-small)] hover:bg-[var(--color-base-350)] hover:shadow-[var(--input-shadow-hover)]`}
+                        >
+                          <MoreHorizIcon className="h-4.5 w-4.5" />
+                        </button>
+                      </Dropdown>
+                    </div>
                   </div>
-                </div>
-              </figure>
-            ))}
-          </div>
-        ))}
+                </figure>
+              ))}
+            </div>
+          ))
+        }
       </div>
     </div>
   );
