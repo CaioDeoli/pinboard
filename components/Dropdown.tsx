@@ -59,8 +59,7 @@ export default function Dropdown({ items, children, searchable, searchPlaceholde
     return it.label.toLowerCase().includes(localQuery.trim().toLowerCase());
   });
 
-  const baseClass =
-    "text-[var(--foreground)] text-[13px]/[1.3] font-[Mona_Sans] inline-flex gap-2 items-center px-2 py-1 rounded-sm overflow-hidden text-ellipsis whitespace-nowrap cursor-pointer transition w-full";
+  const baseClass = "text-[var(--foreground)] text-[13px]/[1.3] font-[Mona_Sans] inline-flex gap-2 items-center px-2 py-1 rounded-sm overflow-hidden text-ellipsis whitespace-nowrap cursor-pointer transition w-full";
   const hoverClass = "hover:bg-white/7";
 
   return (
@@ -95,7 +94,7 @@ export default function Dropdown({ items, children, searchable, searchPlaceholde
                           setLocalQuery(e.target.value);
                           onSearchChange?.(e.target.value);
                         }}
-                        className="w-full h-[30px] rounded-[6px] ps-8 pe-2 text-[13px] font-[Mona_Sans] bg-[var(--color-dark-950)] text-[var(--foreground)] placeholder:text-[var(--foreground)] outline-0 shadow-[var(--input-shadow)] focus:shadow-[var(--input-shadow-hover)] transition"
+                        className="bg-[var(--color-base-250)] border border-[var(--color-base-300)] hover:border-[var(--color-base-350)] outline-0 h-[30px] w-full rounded-[5px] ps-8 pe-2 py-1 text-[Mona_Sans] text-[13px] text-[var(--color-base-950)] transition"
                       />
                     </div>
                   </div>

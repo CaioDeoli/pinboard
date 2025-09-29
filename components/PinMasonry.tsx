@@ -24,7 +24,7 @@ import tagsData from "@/public/jsons/tags.json";
  * { id: string|number, src: string, alt?: string, width?: number, height?: number, title?: string }
  */
 
-type Pin = {
+export type Pin = {
   id: string | number;
   src: string;
   alt?: string;
@@ -37,6 +37,7 @@ type Pin = {
 type Props = {
   items: Pin[];
   gutter?: number; // px
+  onPinClick?: (pin: Pin) => void;
 };
 
 // Breakpoints mapping based on the table you provided
@@ -53,7 +54,7 @@ function columnsForWidth(width: number) {
   return 1;
 }
 
-export default function PinMasonry({ items, gutter = 16 }: Props) {
+export default function PinMasonry({ items, gutter = 16, onPinClick }: Props) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [columnsCount, setColumnsCount] = useState<number>(2);
   const [columns, setColumns] = useState<Pin[][]>([]);
@@ -147,7 +148,7 @@ export default function PinMasonry({ items, gutter = 16 }: Props) {
     loadAll();
   }, [items, columnsCount, gutter]);
 
-  const buttonClass = "bg-[var(--color-base-200)] hover:bg-[var(--color-base-250)] outline-0 shadow-[var(--input-shadow)] hover:shadow-[var(--input-shadow-hover)] focus-visible:shadow-[0 0 0 3px var(--background-modifier-border-focus)] rounded-[5px] text-[var(--foreground)] text-[13px] font-[Mona_Sans]  inline-flex items-center justify-center px-3 py-1 h-[var(--input-height)] transition";
+  const buttonClass = "outline-0 rounded-[5px] text-[var(--foreground)] text-[13px] font-[Mona_Sans] inline-flex items-center justify-center h-[var(--input-height)] transition";
 
   return (
     <div ref={containerRef} className="w-full" aria-live="polite">
@@ -158,7 +159,8 @@ export default function PinMasonry({ items, gutter = 16 }: Props) {
             {col.map((pin) => (
               <figure
                 key={pin.id}
-                className="relative rounded-lg group"
+                className="relative rounded-lg group cursor-pointer"
+                onClick={() => onPinClick && onPinClick(pin)}
               >
                 <img
                   src={pin.src}
@@ -184,7 +186,7 @@ export default function PinMasonry({ items, gutter = 16 }: Props) {
                         aria-haspopup="menu"
                         aria-expanded="false"
                         aria-label="Open save menu"
-                        className={`${buttonClass} w-7.5 cursor-pointer mod-cta clickable-icon`}
+                        className={`${buttonClass} bg-[var(--color-accent-600)] hover:bg-[var(--color-accent-500)] shadow-[var(--input-shadow-small)] hover:shadow-[var(--input-shadow-hover)] focus-visible:shadow-[0 0 0 3px var(--background-modifier-border-focus)] text-white w-7.5 cursor-pointer p-1`}
                       >
                         <BookmarkIcon className="w-4.5 h-4.5" />
                       </button>
@@ -198,14 +200,14 @@ export default function PinMasonry({ items, gutter = 16 }: Props) {
                         href={pin.link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className={`${buttonClass} flex-1`}
+                        className={`${buttonClass} bg-[var(--color-base-300)] hover:bg-[var(--color-base-350)] shadow-[var(--input-shadow)] hover:shadow-[var(--input-shadow-hover)] focus-visible:shadow-[0 0 0 3px var(--background-modifier-border-focus)] flex-1 px-3 py-1`}
                       >
                         Visit site
                       </a>
                     )}
                     <button
                       type="button"
-                      className={`${buttonClass} w-7.5 cursor-pointer clickable-icon`}
+                      className={`${buttonClass} bg-[var(--color-base-300)] hover:bg-[var(--color-base-350)] shadow-[var(--input-shadow-small)] hover:shadow-[var(--input-shadow-hover)] focus-visible:shadow-[0 0 0 3px var(--background-modifier-border-focus)] p-1 w-7.5 cursor-pointer`}
                     >
                       <DownloadIcon className="w-4.5 h-4.5" />
                     </button>
@@ -218,7 +220,7 @@ export default function PinMasonry({ items, gutter = 16 }: Props) {
                     >
                       <button
                         type="button"
-                        className={`${buttonClass} w-7.5 cursor-pointer clickable-icon`}
+                        className={`${buttonClass} bg-[var(--color-base-300)] hover:bg-[var(--color-base-350)] shadow-[var(--input-shadow-small)] hover:shadow-[var(--input-shadow-hover)] focus-visible:shadow-[0 0 0 3px var(--background-modifier-border-focus)] p-1 w-7.5 cursor-pointer`}
                       >
                         <MoreHorizIcon className="w-4.5 h-4.5" />
                       </button>
