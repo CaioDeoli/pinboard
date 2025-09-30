@@ -50,7 +50,7 @@ export default function Modal({
         onClick={(e) => e.stopPropagation()}
       >
         {/* Titlebar interna */}
-        <div className="flex items-center p-1.5">
+        <div className="flex flex-none items-center p-1.5">
           <div className="ml-auto flex h-full items-center">
             <button
               aria-label="Minimize"
@@ -70,37 +70,38 @@ export default function Modal({
             </button>
           </div>
         </div>
-        <div className="flex gap-12 px-12 py-8">
-          <div className="relative h-[340px] w-[279px]">
-            {/* Choose a file or drag and drop it here */}
-            <div className="bg-300 pointer-events-none flex h-full w-full flex-col items-center justify-center rounded-lg border border-dashed border-[var(--color-base-300)] bg-[var(--color-base-250)] p-4">
-              <UploadFileIcon className="h-6 w-6" />
-              <p className="max-w-[165px] pt-1.5 text-center font-[Mona_Sans] text-[15px] leading-[1.3] text-[var(--color-base-950)]">
-                Choose a file or drag and drop it here
-              </p>
-              <div className="absolute bottom-0 px-4.5 py-6">
-                <p className="text-center font-[Mona_Sans] text-[12px] leading-[1.3] text-[var(--color-base-700)]">
-                  We recommend using high quality .jpg files less than 20 MB or
-                  .mp4 files less than 200 MB
+        <div className="flex flex-1 gap-12 ps-12 items-stretch overflow-hidden">
+          {/* <div className="w-[279px] flex-none h-full">
+            <div className="relative h-[340px] w-full flex-none">
+              <div className="bg-300 pointer-events-none flex h-full w-full flex-col items-center justify-center rounded-lg border border-dashed border-[var(--color-base-300)] bg-[var(--color-base-250)] p-4">
+                <UploadFileIcon className="h-6 w-6" />
+                <p className="max-w-[165px] pt-1.5 text-center font-[Mona_Sans] text-[15px] leading-[1.3] text-[var(--color-base-950)]">
+                  Choose a file or drag and drop it here
                 </p>
+                <div className="absolute bottom-0 px-4.5 py-6">
+                  <p className="text-center font-[Mona_Sans] text-[12px] leading-[1.3] text-[var(--color-base-700)]">
+                    We recommend using high quality .jpg files less than 20 MB or
+                    .mp4 files less than 200 MB
+                  </p>
+                </div>
               </div>
+              <input
+                type="file"
+                className="absolute top-0 left-0 h-full w-full cursor-pointer opacity-0"
+              />
             </div>
-            <input
-              type="file"
-              className="absolute top-0 left-0 h-full cursor-pointer opacity-0"
-            />
-          </div>
+          </div> */}
 
           {/* Content */}
-          <div className="flex-1">
+          <div className="flex-1 min-w-0 pt-10 overflow-y-auto [scroll-padding-bottom:6rem]">
             <TextEditor
               title={editorTitle}
               content={editorContent}
               onTitleChange={setEditorTitle}
               onContentChange={setEditorContent}
-              className="mb-[15px]"
+              className="mb-[150px]"
             />
-            <input
+            {/* <input
               type="url"
               value={link}
               onChange={(e) => setLink(e.target.value)}
@@ -111,10 +112,10 @@ export default function Modal({
               placeholder="Tags"
               className="mb-[15px]"
               onChange={setSelectedTags}
-            />
-            <button className="focus-visible:shadow-[0 0 0 3px var(--background-modifier-border-focus)] mb-[15px] h-[30px] w-full cursor-pointer rounded-[5px] bg-[var(--color-accent-600)] px-2 py-1 font-[Mona_Sans] text-[13px] text-white shadow-[var(--input-shadow)] outline-0 transition hover:bg-[var(--color-accent-500)] hover:shadow-[var(--input-shadow-hover)]">
+            /> */}
+            {/* <button className="focus-visible:shadow-[0 0 0 3px var(--background-modifier-border-focus)] mb-[15px] h-[30px] w-full cursor-pointer rounded-[5px] bg-[var(--color-accent-600)] px-2 py-1 font-[Mona_Sans] text-[13px] text-white shadow-[var(--input-shadow)] outline-0 transition hover:bg-[var(--color-accent-500)] hover:shadow-[var(--input-shadow-hover)]">
               Create
-            </button>
+            </button> */}
           </div>
         </div>
       </div>
