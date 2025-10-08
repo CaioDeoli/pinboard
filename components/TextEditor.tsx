@@ -16,6 +16,7 @@ interface TextEditorProps {
   autoFocus?: boolean;
   title?: string;
   onTitleChange?: (title: string) => void;
+  richPlaceholder?: string;
 }
 
 const LINE_CLASS =
@@ -29,6 +30,7 @@ export default function TextEditor({
   autoFocus = false,
   title = "",
   onTitleChange,
+  richPlaceholder = "",
 }: TextEditorProps) {
   const editorRef = useRef<HTMLDivElement>(null);
   const [isEmpty, setIsEmpty] = useState(true);
@@ -223,10 +225,26 @@ export default function TextEditor({
 
       {/* Editor */}
       <div className="flex flex-1 items-stretch font-['Mona_Sans'] text-[16px] leading-[1.5] relative">
-        {isEmpty && placeholder && (
-          <span className="absolute top-0 left-0 text-gray-400 pointer-events-none select-none">
-            {placeholder}
-          </span>
+        {isEmpty && (richPlaceholder || placeholder) && (
+          <div
+            className="absolute top-0 left-0 pointer-events-none select-none"
+            style={{
+              color: 'rgb(128, 125, 120)',
+              WebkitTextFillColor: 'rgb(128, 125, 120)',
+              fontSize: '16px',
+              lineHeight: '1.5',
+              fontFamily: 'Mona_Sans, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"',
+              paddingTop: '3px',
+              paddingBottom: '3px',
+              paddingLeft: '2px',
+              paddingRight: '2px',
+              whiteSpace: 'break-spaces',
+              wordBreak: 'break-word',
+              maxWidth: '700px'
+            }}
+          >
+            {richPlaceholder || placeholder}
+          </div>
         )}
         <div
           ref={editorRef}

@@ -99,6 +99,7 @@ export default function Modal({
               content={editorContent}
               onTitleChange={setEditorTitle}
               onContentChange={setEditorContent}
+              richPlaceholder="Write, press 'space' for AI, '/' for commands…"
               className="mb-[150px]"
             />
             {/* <input
